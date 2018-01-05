@@ -16,11 +16,11 @@ article data-cable-post-id=post.id
 
     = react_component('TimeAgo', { date: post.updated_at }, { tag: 'p', class: 'badge badge-secondary'})
 
-  - if post.clips.present?
+  - if post.images.present?
     ruby:
-      images = post.clips.map do |clip|
-        { src:             clip.image_url(:large, expires_in: 1.day.to_i),
-          thumbnail:       clip.image_url(:thumbnail, expires_in: 1.day.to_i),
+      images = post.images.map do |image|
+        { src:             url_for(image.variant(resize: '1200x1200')),
+          thumbnail:       url_for(image.variant(resize: '400x400')),
           thumbnailWidth:  400,
           thumbnailHeight: 400
         }
