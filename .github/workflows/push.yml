@@ -7,7 +7,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:12-alpine
+        image: postgres:13-alpine
         ports: ["5432:5432"]
         env:
           POSTGRES_PASSWORD: postgres
@@ -17,7 +17,7 @@ jobs:
         ports: ["6379:6379"]
 
       elasticsearch:
-        image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.8.0
+        image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.9.2
         ports: ["9200:9200"]
         options: -e="discovery.type=single-node"
 
@@ -26,8 +26,6 @@ jobs:
 
       - name: Set up Ruby 2.7
         uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 2.7.1
 
       - name: Cache Ruby gems
         uses: actions/cache@v2
@@ -106,15 +104,3 @@ jobs:
         run: |
           docker build -t docker.pkg.github.com/ledermann/docker-rails/docker-rails:stable .
           docker push docker.pkg.github.com/ledermann/docker-rails/docker-rails:stable
-
-  auto-merge:
-    runs-on: ubuntu-latest
-    if: github.ref != 'refs/heads/master' && github.ref != 'refs/heads/develop'
-    needs:
-      - test
-    steps:
-      - name: Auto merge PullRequest from dependabot
-        uses: ridedott/merge-me-action@master
-        with:
-          GITHUB_LOGIN: dependabot[bot]
-          GITHUB_TOKEN: ${{ secrets.PERSONAL_TOKEN }}
